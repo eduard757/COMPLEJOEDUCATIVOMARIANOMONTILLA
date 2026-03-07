@@ -12,86 +12,63 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* LOGO DE FONDO: Se ajusta a toda la pantalla con transparencia */
+            /* FONDO CON EL ESCUDO */
             background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
                         url('IMG-20260123-WA0146.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-repeat: no-repeat;
         }
 
-        /* ANIMACIÓN PARA EL LOGO QUE SE MUEVE */
         @keyframes flotar {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
         }
 
-        .contenedor-principal {
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .escudo-animado {
-            width: 140px;
-            height: auto;
-            margin-bottom: 15px;
-            animation: flotar 4s ease-in-out infinite; /* El logo se mueve solo */
-        }
-
-        /* DISEÑO EN COLORES AZULES */
+        .contenedor-principal { text-align: center; width: 100%; max-width: 500px; }
+        .escudo-animado { width: 140px; animation: flotar 4s ease-in-out infinite; }
+        
         .card {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            border-top: 6px solid #1a2a6c; /* Azul oscuro institucional */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 6px solid #1a2a6c;
         }
 
-        h1 { color: #1a2a6c; font-size: 1.5em; text-transform: uppercase; margin-bottom: 5px; }
-        p.ubicacion { color: #3498db; font-weight: bold; margin-bottom: 25px; }
-        
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #1a2a6c;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #1a2a6c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
+        h1 { color: #1a2a6c; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #1a2a6c; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #1a2a6c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         button:hover { background-color: #3498db; }
     </style>
 </head>
 <body>
 
     <div class="contenedor-principal">
-        <img src="IMG-20260123-WA0146.jpg" alt="Escudo Mariano Montilla" class="escudo-animado">
-        
+        <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
         <h1>Complejo Educativo "Mariano Montilla"</h1>
-        <p class="ubicacion">Valle de la Pascua - Edo. Guárico</p>
-
+        
         <div class="card">
             <h2 style="color: #1a2a6c;">🔑 Acceso al Sistema</h2>
-            <input type="text" placeholder="Cédula del Estudiante">
-            <input type="password" placeholder="Contraseña">
-            <button>Ingresar a Tesis</button>
+            <input type="text" id="usuario" placeholder="Usuario (MARIANO)">
+            <input type="password" id="clave" placeholder="Contraseña (12345)">
+            <button onclick="entrar()">Ingresar a Tesis</button>
         </div>
     </div>
 
+    <script>
+        function entrar() {
+            const user = document.getElementById('usuario').value;
+            const pass = document.getElementById('clave').value;
+
+            if (user === "MARIANO" && pass === "12345") {
+                alert("¡Acceso concedido! Bienvenido al sistema institucional.");
+                // Aquí podrías redirigir al buscador
+            } else {
+                alert("Usuario o clave incorrectos.");
+            }
+        }
+    </script>
 </body>
 </html>
