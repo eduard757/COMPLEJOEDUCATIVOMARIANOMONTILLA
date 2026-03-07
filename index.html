@@ -19,99 +19,131 @@
         @keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 6px solid var(--azul-oscuro); margin-top: 20px; }
-        
-        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         
-        button { background: var(--azul-oscuro); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        button { background: var(--azul-oscuro); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         button:hover { background: var(--azul-claro); }
 
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; }
         th { background: var(--azul-oscuro); color: white; padding: 12px; }
         td { border: 1px solid #ddd; padding: 12px; text-align: left; cursor: pointer; }
-        .fila-retirado { background-color: #ffcccc !important; color: #c0392b; font-weight: bold; }
+        .fila-retirado { background-color: #ffcccc !important; color: #c0392b; }
 
         /* MODAL DE LA FICHA */
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); overflow-y: auto; }
         .modal-content { 
-            background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 550px; 
-            border-radius: 15px; text-align: left; position: relative; 
-            border-left: 10px solid var(--azul-oscuro);
+            background: white; margin: 20px auto; padding: 40px; width: 90%; max-width: 700px; 
+            border-radius: 5px; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-        .cerrar { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: #999; }
-        .ficha-titulo { color: var(--azul-oscuro); border-bottom: 2px solid var(--azul-claro); padding-bottom: 10px; margin-top: 0; }
-        .dato-item { margin-bottom: 10px; }
-        .label { font-weight: bold; color: var(--azul-oscuro); display: block; font-size: 0.85em; text-transform: uppercase; }
-        .valor { font-size: 1.1em; color: #333; }
+
+        .encabezado-ficha { display: flex; align-items: center; border-bottom: 3px solid var(--azul-oscuro); padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-ficha { width: 80px; margin-right: 20px; }
+        .titulo-institucion { text-align: left; flex-grow: 1; position: relative; }
+        .titulo-institucion h2 { margin: 0; color: var(--azul-oscuro); font-size: 1.2em; }
+        .titulo-institucion p { margin: 2px 0; font-size: 0.9em; font-weight: bold; }
+        .fecha-ingreso-ficha { position: absolute; right: 0; top: 0; font-size: 0.75em; color: #555; font-style: italic; }
+
+        .cuerpo-ficha { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; }
+        .dato-linea { border-bottom: 1px solid #eee; padding: 5px 0; }
+        .label { font-weight: bold; color: #555; font-size: 0.8em; text-transform: uppercase; display: block; }
+        .valor { font-size: 1em; color: #000; }
+        .dato-full { grid-column: 1 / span 2; }
+
+        .cerrar { position: absolute; right: 20px; top: 10px; font-size: 30px; cursor: pointer; color: #999; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #modalFicha, #modalFicha * { visibility: visible; }
+            #modalFicha { position: absolute; left: 0; top: 0; width: 100%; background: white; }
+            .cerrar, .no-print { display: none !important; }
+            .modal-content { margin: 0; padding: 20px; border: none; width: 100%; box-shadow: none; }
+        }
     </style>
 </head>
 <body>
 
-<div class="contenedor">
+<div class="contenedor no-print">
     <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
     <h1 style="color: var(--azul-oscuro);">Gestión Escolar "Mariano Montilla"</h1>
 
     <div id="login" class="card">
         <h2>🔑 Acceso Administrativo</h2>
-        <input type="text" id="user" placeholder="Usuario (MARIANO)">
-        <input type="password" id="pass" placeholder="Contraseña (12345)">
-        <button onclick="validar()">Entrar al Sistema</button>
+        <input type="text" id="user" placeholder="Usuario">
+        <input type="password" id="pass" placeholder="Contraseña">
+        <button onclick="validar()">Entrar</button>
     </div>
 
     <div id="sistema" style="display: none;">
         <div class="card">
-            <h3>➕ Registrar Nuevo Alumno</h3>
+            <h3>➕ Nuevo Alumno</h3>
             <div class="grid-form">
-                <input type="text" id="reg-nom" placeholder="Nombres y Apellidos">
-                <input type="text" id="reg-ced" placeholder="Cédula de Identidad">
-                <input type="text" id="reg-esc" placeholder="Cédula Escolar">
-                <div style="text-align: left;">
-                    <label style="font-size: 0.8em; color: #666;">Fecha de Nacimiento:</label>
-                    <input type="date" id="reg-fec">
-                </div>
-                <input type="number" id="reg-eda" placeholder="Edad Actual">
-                <select id="reg-gra">
-                    <option value="1">1er Grado</option>
-                    <option value="2">2do Grado</option>
-                    <option value="3">3er Grado</option>
-                    <option value="4">4to Grado</option>
+                <input type="text" id="r-nom" placeholder="Nombres y Apellidos">
+                <input type="text" id="r-ced" placeholder="Cédula">
+                <input type="text" id="r-esc" placeholder="Cédula Escolar">
+                <input type="date" id="r-fec" title="Fecha de Nacimiento">
+                <input type="number" id="r-eda" placeholder="Edad">
+                <input type="text" id="r-lug" placeholder="Lugar de Nacimiento">
+                <select id="r-gra">
+                    <option value="1">1er Grado</option><option value="2">2do Grado</option>
+                    <option value="3">3er Grado</option><option value="4">4to Grado</option>
                     <option value="5">5to Grado</option>
                 </select>
-                <input type="text" id="reg-sec" placeholder="Sección">
-                <input type="text" id="reg-pro" placeholder="Nombre del Profesor">
-                <input type="text" id="reg-pad" placeholder="Padres / Representante">
-                <input type="text" id="reg-tel" placeholder="Teléfono de Contacto">
+                <input type="text" id="r-sec" placeholder="Sección">
+                <input type="text" id="r-pad" placeholder="Representante">
+                <input type="text" id="r-pro" placeholder="Profesor">
+                <input type="text" id="r-tel" placeholder="Teléfono">
+                <input type="email" id="r-cor" placeholder="Correo Electrónico">
             </div>
-            <button style="margin-top: 15px;" onclick="guardarAlumno()">💾 Guardar Estudiante</button>
+            <button onclick="guardar()">💾 Registrar Estudiante</button>
         </div>
 
         <div class="card">
-            <h3>📋 Lista de Estudiantes</h3>
-            <div id="contenedor-tablas"></div>
+            <h3>📋 Lista de Alumnos (Clic para Ficha)</h3>
+            <div id="tabla-alumnos"></div>
         </div>
     </div>
 </div>
 
 <div id="modalFicha" class="modal">
     <div class="modal-content">
-        <span class="cerrar" onclick="cerrarFicha()">&times;</span>
-        <h2 class="ficha-titulo">📄 Ficha del Estudiante</h2>
-        <div class="dato-item"><span class="label">Nombres y Apellidos</span><span id="f-nom" class="valor"></span></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="dato-item"><span class="label">Cédula</span><span id="f-ced" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Grado</span><span id="f-gra" class="valor"></span></div>
+        <span class="cerrar" onclick="cerrar()">&times;</span>
+        
+        <div class="encabezado-ficha">
+            <img src="IMG-20260123-WA0146.jpg" class="logo-ficha">
+            <div class="titulo-institucion">
+                <div class="fecha-ingreso-ficha">Ingreso: <span id="f-ingreso"></span></div>
+                <h2>COMPLEJO EDUCATIVO "MARIANO MONTILLA"</h2>
+                <p>VALLE DE LA PASCUA - ESTADO GUÁRICO</p>
+                <p style="color: var(--azul-claro);">FICHA ACADÉMICA DEL ESTUDIANTE</p>
+            </div>
         </div>
-        <div class="dato-item"><span class="label">Cédula Escolar</span><span id="f-esc" class="valor"></span></div>
-        <div class="dato-item"><span class="label">Representante</span><span id="f-pad" class="valor"></span></div>
-        <div class="dato-item"><span class="label">Profesor</span><span id="f-pro" class="valor"></span></div>
-        <hr>
-        <button id="btnRetiro" style="background: var(--rojo-retiro);" onclick="alternarRetiro()">Marcar como Retirado</button>
+
+        <div class="cuerpo-ficha">
+            <div class="dato-linea dato-full"><span class="label">Nombres y Apellidos</span><span id="f-nom" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Cédula Identidad</span><span id="f-ced" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Cédula Escolar</span><span id="f-esc" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Grado</span><span id="f-gra" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Sección</span><span id="f-sec" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Fecha Nacimiento</span><span id="f-fec" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Edad</span><span id="f-eda" class="valor"></span></div>
+            <div class="dato-linea dato-full"><span class="label">Lugar de Nacimiento</span><span id="f-lug" class="valor"></span></div>
+            <div class="dato-linea dato-full"><span class="label">Representante</span><span id="f-pad" class="valor"></span></div>
+            <div class="dato-linea dato-full"><span class="label">Profesor Guía</span><span id="f-pro" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Teléfono</span><span id="f-tel" class="valor"></span></div>
+            <div class="dato-linea"><span class="label">Correo Electrónico</span><span id="f-cor" class="valor"></span></div>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px;" class="no-print">
+            <button onclick="window.print()" style="background: #27ae60;">🖨️ Descargar PDF / Imprimir</button>
+            <button id="btnRetiro" style="background: var(--rojo-retiro);" onclick="marcar()">Marcar Retirado</button>
+        </div>
     </div>
 </div>
 
 <script>
     let alumnos = [];
-    let idSeleccionado = "";
+    let sel = "";
 
     function validar() {
         if(document.getElementById('user').value === "MARIANO" && document.getElementById('pass').value === "12345") {
@@ -120,58 +152,76 @@
         } else { alert("Datos incorrectos"); }
     }
 
-    function guardarAlumno() {
-        const alu = {
+    function guardar() {
+        const ahora = new Date();
+        const fechaIngreso = ahora.toLocaleDateString() + ' ' + ahora.toLocaleTimeString();
+
+        const a = {
             id: Date.now().toString(),
-            nombre: document.getElementById('reg-nom').value.toUpperCase(),
-            cedula: document.getElementById('reg-ced').value,
-            escolar: document.getElementById('reg-esc').value,
-            grado: document.getElementById('reg-gra').value,
-            seccion: document.getElementById('reg-sec').value.toUpperCase(),
-            profe: document.getElementById('reg-pro').value,
-            padres: document.getElementById('reg-pad').value,
-            retirado: false
+            nombre: document.getElementById('r-nom').value.toUpperCase(),
+            ced: document.getElementById('r-ced').value,
+            esc: document.getElementById('r-esc').value,
+            fec: document.getElementById('r-fec').value,
+            eda: document.getElementById('r-eda').value,
+            lug: document.getElementById('r-lug').value,
+            gra: document.getElementById('r-gra').value,
+            sec: document.getElementById('r-sec').value.toUpperCase(),
+            pad: document.getElementById('r-pad').value,
+            pro: document.getElementById('r-pro').value,
+            tel: document.getElementById('r-tel').value,
+            cor: document.getElementById('r-cor').value,
+            ingreso: fechaIngreso,
+            ret: false
         };
-        alumnos.push(alu);
-        actualizarTabla();
+        
+        if(!a.nombre || !a.ced) return alert("Nombre y Cédula son obligatorios");
+        alumnos.push(a);
+        mostrar();
+        document.querySelectorAll('.grid-form input').forEach(i => i.value = "");
     }
 
-    function actualizarTabla() {
+    function mostrar() {
         let html = "";
         for(let i=1; i<=5; i++) {
-            let lista = alumnos.filter(a => a.grado == i).sort((a,b) => a.nombre.localeCompare(b.nombre));
-            if(lista.length > 0) {
+            let list = alumnos.filter(x => x.gra == i).sort((a,b) => a.nombre.localeCompare(b.nombre));
+            if(list.length > 0) {
                 html += `<h4>${i}to Grado</h4><table><tr><th>Nombre</th><th>Sección</th></tr>`;
-                lista.forEach(a => {
-                    html += `<tr class="${a.retirado ? 'fila-retirado' : ''}" onclick="abrirFicha('${a.id}')">
-                        <td>${a.nombre}</td><td>${a.seccion}</td>
-                    </tr>`;
+                list.forEach(x => {
+                    html += `<tr class="${x.ret ? 'fila-retirado' : ''}" onclick="abrir('${x.id}')"><td>${x.nombre}</td><td>${x.sec}</td></tr>`;
                 });
                 html += `</table>`;
             }
         }
-        document.getElementById('contenedor-tablas').innerHTML = html || "<p>Sin registros.</p>";
+        document.getElementById('tabla-alumnos').innerHTML = html || "<p>Sin registros</p>";
     }
 
-    function abrirFicha(id) {
-        const a = alumnos.find(x => x.id === id);
-        idSeleccionado = id;
-        document.getElementById('f-nom').innerText = a.nombre;
-        document.getElementById('f-ced').innerText = a.cedula;
-        document.getElementById('f-esc').innerText = a.escolar;
-        document.getElementById('f-gra').innerText = a.grado + "to Grado Seccion " + a.seccion;
-        document.getElementById('f-pad').innerText = a.padres;
-        document.getElementById('f-pro').innerText = a.profe;
+    function abrir(id) {
+        const x = alumnos.find(a => a.id === id);
+        sel = id;
+        document.getElementById('f-nom').innerText = x.nombre;
+        document.getElementById('f-ced').innerText = x.ced;
+        document.getElementById('f-esc').innerText = x.esc;
+        document.getElementById('f-gra').innerText = x.gra + "to Grado";
+        document.getElementById('f-sec').innerText = x.sec;
+        document.getElementById('f-fec').innerText = x.fec;
+        document.getElementById('f-eda').innerText = x.eda + " años";
+        document.getElementById('f-lug').innerText = x.lug;
+        document.getElementById('f-pad').innerText = x.pad;
+        document.getElementById('f-pro').innerText = x.pro;
+        document.getElementById('f-tel').innerText = x.tel;
+        document.getElementById('f-cor').innerText = x.cor;
+        document.getElementById('f-ingreso').innerText = x.ingreso;
+        document.getElementById('btnRetiro').innerText = x.ret ? "Reincorporar Alumno" : "Marcar Retirado";
         document.getElementById('modalFicha').style.display = 'block';
     }
 
-    function cerrarFicha() { document.getElementById('modalFicha').style.display = 'none'; }
-
-    function alternarRetiro() {
-        let a = alumnos.find(x => x.id === idSeleccionado);
-        a.retirado = !a.retirado;
-        cerrarFicha();
-        actualizarTabla();
+    function cerrar() { document.getElementById('modalFicha').style.display = 'none'; }
+    
+    function marcar() {
+        let x = alumnos.find(a => a.id === sel);
+        x.ret = !x.ret;
+        cerrar();
+        mostrar();
     }
 </script>
 </body>
