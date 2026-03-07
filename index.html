@@ -12,7 +12,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* FONDO CON EL ESCUDO */
             background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
                         url('IMG-20260123-WA0146.jpg');
             background-size: cover;
@@ -26,8 +25,8 @@
             100% { transform: translateY(0px); }
         }
 
-        .contenedor-principal { text-align: center; width: 100%; max-width: 500px; }
-        .escudo-animado { width: 140px; animation: flotar 4s ease-in-out infinite; }
+        .contenedor-principal { text-align: center; width: 100%; max-width: 600px; padding: 20px; }
+        .escudo-animado { width: 120px; animation: flotar 4s ease-in-out infinite; }
         
         .card {
             background-color: white;
@@ -37,36 +36,103 @@
             border-top: 6px solid #1a2a6c;
         }
 
-        h1 { color: #1a2a6c; }
+        h1 { color: #1a2a6c; font-size: 1.5em; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #1a2a6c; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #1a2a6c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button { width: 100%; padding: 12px; background-color: #1a2a6c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         button:hover { background-color: #3498db; }
+
+        /* Estilo de la Ficha del Alumno */
+        .resultado {
+            margin-top: 20px;
+            text-align: left;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+        .dato { font-weight: bold; color: #1a2a6c; }
     </style>
 </head>
 <body>
 
     <div class="contenedor-principal">
         <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
-        <h1>Complejo Educativo "Mariano Montilla"</h1>
+        <h1>Sistema de Gestión "Mariano Montilla"</h1>
         
-        <div class="card">
-            <h2 style="color: #1a2a6c;">🔑 Acceso al Sistema</h2>
-            <input type="text" id="usuario" placeholder="Usuario (MARIANO)">
-            <input type="password" id="clave" placeholder="Contraseña (12345)">
-            <button onclick="entrar()">Ingresar a Tesis</button>
+        <div id="pantalla-login" class="card">
+            <h2 style="color: #1a2a6c;">🔑 Acceso Institucional</h2>
+            <input type="text" id="usuario" placeholder="Usuario">
+            <input type="password" id="clave" placeholder="Contraseña">
+            <button onclick="entrar()">Ingresar</button>
+        </div>
+
+        <div id="pantalla-sistema" class="card" style="display: none;">
+            <h2 style="color: #1a2a6c;">🔍 Buscador de Alumnos</h2>
+            <p>Ingrese la cédula para consultar datos:</p>
+            <input type="text" id="cedulaBusqueda" placeholder="Ej: V-30123456">
+            <button onclick="buscarAlumno()">Consultar Alumno</button>
+
+            <div id="fichaAlumno" class="resultado">
+                <p><span class="dato">Nombres y Apellidos:</span> <span id="resNombre"></span></p>
+                <p><span class="dato">Cédula:</span> <span id="resCedula"></span></p>
+                <p><span class="dato">Cédula Escolar:</span> <span id="resEscolar"></span></p>
+                <p><span class="dato">Año y Sección:</span> <span id="resGrado"></span></p>
+                <p><span class="dato">Fecha de Nacimiento:</span> <span id="resFecha"></span></p>
+                <p><span class="dato">Edad:</span> <span id="resEdad"></span></p>
+                <p><span class="dato">Padres/Representante:</span> <span id="resPadres"></span></p>
+                <p><span class="dato">Teléfono:</span> <span id="resTel"></span></p>
+                <p><span class="dato">Profesor(a):</span> <span id="resProfe"></span></p>
+            </div>
         </div>
     </div>
 
     <script>
+        // BASE DE DATOS DE EJEMPLO (Aquí puedes agregar más alumnos)
+        const alumnos = [
+            { 
+                cedula: "V-30000111", 
+                escolar: "1300000111",
+                nombre: "Juan Pérez", 
+                fecha: "15/05/2008",
+                edad: "17", 
+                grado: "5to Año Seccion A", 
+                profe: "Dra. García", 
+                padres: "Ana Pérez y José Pérez", 
+                tel: "0412-1234567" 
+            }
+        ];
+
         function entrar() {
             const user = document.getElementById('usuario').value;
             const pass = document.getElementById('clave').value;
 
             if (user === "MARIANO" && pass === "12345") {
-                alert("¡Acceso concedido! Bienvenido al sistema institucional.");
-                // Aquí podrías redirigir al buscador
+                document.getElementById('pantalla-login').style.display = 'none';
+                document.getElementById('pantalla-sistema').style.display = 'block';
             } else {
                 alert("Usuario o clave incorrectos.");
+            }
+        }
+
+        function buscarAlumno() {
+            const buscado = document.getElementById('cedulaBusqueda').value;
+            const encontrado = alumnos.find(a => a.cedula === buscado);
+
+            if (encontrado) {
+                document.getElementById('resNombre').innerText = encontrado.nombre;
+                document.getElementById('resCedula').innerText = encontrado.cedula;
+                document.getElementById('resEscolar').innerText = encontrado.escolar;
+                document.getElementById('resGrado').innerText = encontrado.grado;
+                document.getElementById('resFecha').innerText = encontrado.fecha;
+                document.getElementById('resEdad').innerText = encontrado.edad;
+                document.getElementById('resPadres').innerText = encontrado.padres;
+                document.getElementById('resTel').innerText = encontrado.tel;
+                document.getElementById('resProfe').innerText = encontrado.profe;
+                document.getElementById('fichaAlumno').style.display = 'block';
+            } else {
+                alert("Alumno no encontrado. Verifique la cédula.");
+                document.getElementById('fichaAlumno').style.display = 'none';
             }
         }
     </script>
