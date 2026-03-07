@@ -5,136 +5,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGE - Mariano Montilla</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
-                        url('IMG-20260123-WA0146.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-        @keyframes flotar {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .contenedor-principal { text-align: center; width: 100%; max-width: 600px; padding: 20px; }
-        .escudo-animado { width: 120px; animation: flotar 4s ease-in-out infinite; }
+        :root { --azul-oscuro: #1a2a6c; --azul-claro: #3498db; --rojo-retiro: #e74c3c; }
         
-        .card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            border-top: 6px solid #1a2a6c;
+        body {
+            font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('IMG-20260123-WA0146.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
         }
 
-        h1 { color: #1a2a6c; font-size: 1.5em; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #1a2a6c; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #1a2a6c; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #3498db; }
+        .contenedor { width: 95%; max-width: 900px; text-align: center; padding: 20px; }
+        .escudo-animado { width: 100px; animation: flotar 4s ease-in-out infinite; }
+        @keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* Estilo de la Ficha del Alumno */
-        .resultado {
-            margin-top: 20px;
-            text-align: left;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #3498db;
-            display: none;
-        }
-        .dato { font-weight: bold; color: #1a2a6c; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 6px solid var(--azul-oscuro); margin-top: 20px; }
+        
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        button { background: var(--azul-oscuro); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button:hover { background: var(--azul-claro); }
+        .btn-retirar { background: var(--rojo-retiro); margin-top: 5px; padding: 5px; font-size: 0.8em; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; font-size: 0.9em; }
+        th { background: var(--azul-oscuro); color: white; padding: 10px; }
+        td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .fila-retirado { background-color: #ffcccc !important; color: #c0392b; font-weight: bold; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 10px; }
+        .tab-btn { background: #eee; color: #333; }
+        .tab-active { background: var(--azul-oscuro); color: white; }
     </style>
 </head>
 <body>
 
-    <div class="contenedor-principal">
-        <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
-        <h1>Sistema de Gestión "Mariano Montilla"</h1>
-        
-        <div id="pantalla-login" class="card">
-            <h2 style="color: #1a2a6c;">🔑 Acceso Institucional</h2>
-            <input type="text" id="usuario" placeholder="Usuario">
-            <input type="password" id="clave" placeholder="Contraseña">
-            <button onclick="entrar()">Ingresar</button>
-        </div>
+<div class="contenedor">
+    <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
+    <h1 style="color: var(--azul-oscuro);">Gestión Escolar "Mariano Montilla"</h1>
 
-        <div id="pantalla-sistema" class="card" style="display: none;">
-            <h2 style="color: #1a2a6c;">🔍 Buscador de Alumnos</h2>
-            <p>Ingrese la cédula para consultar datos:</p>
-            <input type="text" id="cedulaBusqueda" placeholder="Ej: V-30123456">
-            <button onclick="buscarAlumno()">Consultar Alumno</button>
-
-            <div id="fichaAlumno" class="resultado">
-                <p><span class="dato">Nombres y Apellidos:</span> <span id="resNombre"></span></p>
-                <p><span class="dato">Cédula:</span> <span id="resCedula"></span></p>
-                <p><span class="dato">Cédula Escolar:</span> <span id="resEscolar"></span></p>
-                <p><span class="dato">Año y Sección:</span> <span id="resGrado"></span></p>
-                <p><span class="dato">Fecha de Nacimiento:</span> <span id="resFecha"></span></p>
-                <p><span class="dato">Edad:</span> <span id="resEdad"></span></p>
-                <p><span class="dato">Padres/Representante:</span> <span id="resPadres"></span></p>
-                <p><span class="dato">Teléfono:</span> <span id="resTel"></span></p>
-                <p><span class="dato">Profesor(a):</span> <span id="resProfe"></span></p>
-            </div>
-        </div>
+    <div id="login" class="card">
+        <h2>🔑 Acceso</h2>
+        <input type="text" id="user" placeholder="Usuario">
+        <input type="password" id="pass" placeholder="Contraseña">
+        <button onclick="validar()">Entrar al Sistema</button>
     </div>
 
-    <script>
-        // BASE DE DATOS DE EJEMPLO (Aquí puedes agregar más alumnos)
-        const alumnos = [
-            { 
-                cedula: "V-30000111", 
-                escolar: "1300000111",
-                nombre: "Juan Pérez", 
-                fecha: "15/05/2008",
-                edad: "17", 
-                grado: "5to Año Seccion A", 
-                profe: "Dra. García", 
-                padres: "Ana Pérez y José Pérez", 
-                tel: "0412-1234567" 
-            }
-        ];
+    <div id="sistema" style="display: none;">
+        <div class="tabs">
+            <button class="tab-btn tab-active" onclick="mostrarTab('nuevo')">➕ Nuevo Alumno</button>
+            <button class="tab-btn" onclick="mostrarTab('lista')">📋 Lista General</button>
+        </div>
 
-        function entrar() {
-            const user = document.getElementById('usuario').value;
-            const pass = document.getElementById('clave').value;
+        <div id="tab-nuevo" class="card">
+            <h3>📝 Registro de Nuevo Estudiante</h3>
+            <div class="grid-form">
+                <input type="text" id="reg-nom" placeholder="Nombres y Apellidos">
+                <input type="text" id="reg-ced" placeholder="Cédula Identidad">
+                <input type="text" id="reg-esc" placeholder="Cédula Escolar">
+                <input type="date" id="reg-fec">
+                <input type="number" id="reg-eda" placeholder="Edad">
+                <select id="reg-gra">
+                    <option value="1">1er Año</option>
+                    <option value="2">2do Año</option>
+                    <option value="3">3er Año</option>
+                    <option value="4">4to Año</option>
+                    <option value="5">5to Año</option>
+                </select>
+                <input type="text" id="reg-sec" placeholder="Sección (A, B, C...)">
+                <input type="text" id="reg-pro" placeholder="Nombre del Profesor">
+                <input type="text" id="reg-pad" placeholder="Padres / Representante">
+                <input type="text" id="reg-tel" placeholder="Teléfono de Contacto">
+            </div>
+            <button onclick="guardarAlumno()">Guardar Estudiante</button>
+        </div>
 
-            if (user === "MARIANO" && pass === "12345") {
-                document.getElementById('pantalla-login').style.display = 'none';
-                document.getElementById('pantalla-sistema').style.display = 'block';
-            } else {
-                alert("Usuario o clave incorrectos.");
+        <div id="tab-lista" class="card" style="display: none;">
+            <h3>📋 Estudiantes por Año y Orden Alfabético</h3>
+            <div id="contenedor-tablas" style="overflow-x: auto;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let alumnos = [];
+
+    function validar() {
+        if(document.getElementById('user').value === "MARIANO" && document.getElementById('pass').value === "12345") {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('sistema').style.display = 'block';
+        } else { alert("Datos incorrectos"); }
+    }
+
+    function mostrarTab(tab) {
+        document.getElementById('tab-nuevo').style.display = tab === 'nuevo' ? 'block' : 'none';
+        document.getElementById('tab-lista').style.display = tab === 'lista' ? 'block' : 'none';
+        document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('tab-active', (i===0 && tab==='nuevo') || (i===1 && tab==='lista')));
+        if(tab === 'lista') actualizarTabla();
+    }
+
+    function guardarAlumno() {
+        const nuevo = {
+            nombre: document.getElementById('reg-nom').value.toUpperCase(),
+            cedula: document.getElementById('reg-ced').value,
+            escolar: document.getElementById('reg-esc').value,
+            fecha: document.getElementById('reg-fec').value,
+            edad: document.getElementById('reg-eda').value,
+            grado: document.getElementById('reg-gra').value,
+            seccion: document.getElementById('reg-sec').value.toUpperCase(),
+            profe: document.getElementById('reg-pro').value,
+            padres: document.getElementById('reg-pad').value,
+            tel: document.getElementById('reg-tel').value,
+            retirado: false
+        };
+        alumnos.push(nuevo);
+        alert("Alumno registrado con éxito");
+        mostrarTab('lista');
+    }
+
+    function actualizarTabla() {
+        let html = "";
+        for(let i=1; i<=5; i++) {
+            let filtrados = alumnos.filter(a => a.grado == i).sort((a,b) => a.nombre.localeCompare(b.nombre));
+            if(filtrados.length > 0) {
+                html += `<h4>${i}to Año</h4><table><tr><th>Nombre</th><th>Cédula</th><th>Sección</th><th>Estado</th></tr>`;
+                filtrados.forEach(a => {
+                    html += `<tr class="${a.retirado ? 'fila-retirado' : ''}">
+                        <td>${a.nombre}</td><td>${a.cedula}</td><td>${a.seccion}</td>
+                        <td><button class="btn-retirar" onclick="marcarRetirado('${a.cedula}')">Retirar</button></td>
+                    </tr>`;
+                });
+                html += `</table>`;
             }
         }
+        document.getElementById('contenedor-tablas').innerHTML = html || "<p>No hay alumnos registrados aún.</p>";
+    }
 
-        function buscarAlumno() {
-            const buscado = document.getElementById('cedulaBusqueda').value;
-            const encontrado = alumnos.find(a => a.cedula === buscado);
-
-            if (encontrado) {
-                document.getElementById('resNombre').innerText = encontrado.nombre;
-                document.getElementById('resCedula').innerText = encontrado.cedula;
-                document.getElementById('resEscolar').innerText = encontrado.escolar;
-                document.getElementById('resGrado').innerText = encontrado.grado;
-                document.getElementById('resFecha').innerText = encontrado.fecha;
-                document.getElementById('resEdad').innerText = encontrado.edad;
-                document.getElementById('resPadres').innerText = encontrado.padres;
-                document.getElementById('resTel').innerText = encontrado.tel;
-                document.getElementById('resProfe').innerText = encontrado.profe;
-                document.getElementById('fichaAlumno').style.display = 'block';
-            } else {
-                alert("Alumno no encontrado. Verifique la cédula.");
-                document.getElementById('fichaAlumno').style.display = 'none';
-            }
-        }
-    </script>
+    function marcarRetirado(ced) {
+        let alu = alumnos.find(a => a.cedula === ced);
+        alu.retirado = !alu.retirado;
+        actualizarTabla();
+    }
+</script>
 </body>
 </html>
