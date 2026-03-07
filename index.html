@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGE - Mariano Montilla</title>
     <style>
-        :root { --azul-oscuro: #1a2a6c; --azul-claro: #3498db; --rojo-retiro: #e74c3c; --gris-fondo: #f4f7f6; }
+        :root { --azul-oscuro: #1a2a6c; --azul-claro: #3498db; --rojo-retiro: #e74c3c; }
         
         body { 
             font-family: 'Segoe UI', sans-serif; margin: 0; min-height: 100vh; 
@@ -28,22 +28,18 @@
 
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; }
         th { background: var(--azul-oscuro); color: white; padding: 12px; }
-        td { border: 1px solid #ddd; padding: 12px; text-align: left; cursor: pointer; transition: 0.2s; }
-        td:hover { background-color: #f1f1f1; }
+        td { border: 1px solid #ddd; padding: 12px; text-align: left; cursor: pointer; }
         .fila-retirado { background-color: #ffcccc !important; color: #c0392b; font-weight: bold; }
 
-        /* MODAL DE LA FICHA COMPLETA */
+        /* MODAL DE LA FICHA */
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
         .modal-content { 
             background: white; margin: 5% auto; padding: 30px; width: 90%; max-width: 550px; 
             border-radius: 15px; text-align: left; position: relative; 
-            border-left: 10px solid var(--azul-oscuro); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-left: 10px solid var(--azul-oscuro);
         }
         .cerrar { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: #999; }
-        .cerrar:hover { color: var(--rojo-retiro); }
-
         .ficha-titulo { color: var(--azul-oscuro); border-bottom: 2px solid var(--azul-claro); padding-bottom: 10px; margin-top: 0; }
-        .info-grupo { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .dato-item { margin-bottom: 10px; }
         .label { font-weight: bold; color: var(--azul-oscuro); display: block; font-size: 0.85em; text-transform: uppercase; }
         .valor { font-size: 1.1em; color: #333; }
@@ -53,7 +49,7 @@
 
 <div class="contenedor">
     <img src="IMG-20260123-WA0146.jpg" class="escudo-animado">
-    <h1 style="color: var(--azul-oscuro); text-shadow: 1px 1px 2px white;">Gestión Escolar "Mariano Montilla"</h1>
+    <h1 style="color: var(--azul-oscuro);">Gestión Escolar "Mariano Montilla"</h1>
 
     <div id="login" class="card">
         <h2>🔑 Acceso Administrativo</h2>
@@ -75,23 +71,22 @@
                 </div>
                 <input type="number" id="reg-eda" placeholder="Edad Actual">
                 <select id="reg-gra">
-                    <option value="1">1er Año</option>
-                    <option value="2">2do Año</option>
-                    <option value="3">3er Año</option>
-                    <option value="4">4to Año</option>
-                    <option value="5">5to Año</option>
+                    <option value="1">1er Grado</option>
+                    <option value="2">2do Grado</option>
+                    <option value="3">3er Grado</option>
+                    <option value="4">4to Grado</option>
+                    <option value="5">5to Grado</option>
                 </select>
-                <input type="text" id="reg-sec" placeholder="Sección (Ej: A, B, C)">
+                <input type="text" id="reg-sec" placeholder="Sección">
                 <input type="text" id="reg-pro" placeholder="Nombre del Profesor">
                 <input type="text" id="reg-pad" placeholder="Padres / Representante">
                 <input type="text" id="reg-tel" placeholder="Teléfono de Contacto">
             </div>
-            <button style="margin-top: 15px;" onclick="guardarAlumno()">💾 Guardar en Base de Datos</button>
+            <button style="margin-top: 15px;" onclick="guardarAlumno()">💾 Guardar Estudiante</button>
         </div>
 
         <div class="card">
             <h3>📋 Lista de Estudiantes</h3>
-            <p style="font-size: 0.9em; color: #666;">(Haz clic en un nombre para ver la ficha completa)</p>
             <div id="contenedor-tablas"></div>
         </div>
     </div>
@@ -101,26 +96,15 @@
     <div class="modal-content">
         <span class="cerrar" onclick="cerrarFicha()">&times;</span>
         <h2 class="ficha-titulo">📄 Ficha del Estudiante</h2>
-        
-        <div class="dato-item">
-            <span class="label">Nombres y Apellidos</span>
-            <span id="f-nom" class="valor" style="font-weight: bold; font-size: 1.3em;"></span>
+        <div class="dato-item"><span class="label">Nombres y Apellidos</span><span id="f-nom" class="valor"></span></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="dato-item"><span class="label">Cédula</span><span id="f-ced" class="valor"></span></div>
+            <div class="dato-item"><span class="label">Grado</span><span id="f-gra" class="valor"></span></div>
         </div>
-
-        <div class="info-grupo">
-            <div class="dato-item"><span class="label">Cédula Identidad</span><span id="f-ced" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Cédula Escolar</span><span id="f-esc" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Fecha Nacimiento</span><span id="f-fec" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Edad</span><span id="f-eda" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Año Escolar</span><span id="f-gra" class="valor"></span></div>
-            <div class="dato-item"><span class="label">Sección</span><span id="f-sec" class="valor"></span></div>
-        </div>
-
-        <div class="dato-item" style="margin-top:15px;"><span class="label">Representante Legal</span><span id="f-pad" class="valor"></span></div>
-        <div class="dato-item"><span class="label">Teléfono de Contacto</span><span id="f-tel" class="valor"></span></div>
-        <div class="dato-item"><span class="label">Profesor(a) Guía</span><span id="f-pro" class="valor"></span></div>
-        
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+        <div class="dato-item"><span class="label">Cédula Escolar</span><span id="f-esc" class="valor"></span></div>
+        <div class="dato-item"><span class="label">Representante</span><span id="f-pad" class="valor"></span></div>
+        <div class="dato-item"><span class="label">Profesor</span><span id="f-pro" class="valor"></span></div>
+        <hr>
         <button id="btnRetiro" style="background: var(--rojo-retiro);" onclick="alternarRetiro()">Marcar como Retirado</button>
     </div>
 </div>
@@ -130,12 +114,10 @@
     let idSeleccionado = "";
 
     function validar() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        if(u === "MARIANO" && p === "12345") {
+        if(document.getElementById('user').value === "MARIANO" && document.getElementById('pass').value === "12345") {
             document.getElementById('login').style.display = 'none';
             document.getElementById('sistema').style.display = 'block';
-        } else { alert("Usuario o Clave incorrectos"); }
+        } else { alert("Datos incorrectos"); }
     }
 
     function guardarAlumno() {
@@ -144,21 +126,14 @@
             nombre: document.getElementById('reg-nom').value.toUpperCase(),
             cedula: document.getElementById('reg-ced').value,
             escolar: document.getElementById('reg-esc').value,
-            fecha: document.getElementById('reg-fec').value,
-            edad: document.getElementById('reg-eda').value,
             grado: document.getElementById('reg-gra').value,
             seccion: document.getElementById('reg-sec').value.toUpperCase(),
             profe: document.getElementById('reg-pro').value,
             padres: document.getElementById('reg-pad').value,
-            tel: document.getElementById('reg-tel').value,
             retirado: false
         };
-        
-        if(!alu.nombre || !alu.cedula) return alert("Por favor, llena los datos principales");
         alumnos.push(alu);
-        alert("¡Registro exitoso!");
         actualizarTabla();
-        limpiarFormulario();
     }
 
     function actualizarTabla() {
@@ -166,16 +141,16 @@
         for(let i=1; i<=5; i++) {
             let lista = alumnos.filter(a => a.grado == i).sort((a,b) => a.nombre.localeCompare(b.nombre));
             if(lista.length > 0) {
-                html += `<h4>${i}to Año</h4><table><tr><th>Nombre Completo</th><th>Cédula</th><th>Sección</th></tr>`;
+                html += `<h4>${i}to Grado</h4><table><tr><th>Nombre</th><th>Sección</th></tr>`;
                 lista.forEach(a => {
                     html += `<tr class="${a.retirado ? 'fila-retirado' : ''}" onclick="abrirFicha('${a.id}')">
-                        <td>${a.nombre}</td><td>${a.cedula}</td><td>${a.seccion}</td>
+                        <td>${a.nombre}</td><td>${a.seccion}</td>
                     </tr>`;
                 });
                 html += `</table>`;
             }
         }
-        document.getElementById('contenedor-tablas').innerHTML = html || "<p>No hay alumnos registrados.</p>";
+        document.getElementById('contenedor-tablas').innerHTML = html || "<p>Sin registros.</p>";
     }
 
     function abrirFicha(id) {
@@ -184,18 +159,9 @@
         document.getElementById('f-nom').innerText = a.nombre;
         document.getElementById('f-ced').innerText = a.cedula;
         document.getElementById('f-esc').innerText = a.escolar;
-        document.getElementById('f-fec').innerText = a.fecha;
-        document.getElementById('f-eda').innerText = a.edad + " años";
-        document.getElementById('f-gra').innerText = a.grado + "to Año";
-        document.getElementById('f-sec').innerText = a.seccion;
+        document.getElementById('f-gra').innerText = a.grado + "to Grado Seccion " + a.seccion;
         document.getElementById('f-pad').innerText = a.padres;
-        document.getElementById('f-tel').innerText = a.tel;
         document.getElementById('f-pro').innerText = a.profe;
-        
-        const btn = document.getElementById('btnRetiro');
-        btn.innerText = a.retirado ? "Reincorporar Alumno" : "Marcar como Retirado";
-        btn.style.background = a.retirado ? "#27ae60" : "var(--rojo-retiro)";
-        
         document.getElementById('modalFicha').style.display = 'block';
     }
 
@@ -206,14 +172,6 @@
         a.retirado = !a.retirado;
         cerrarFicha();
         actualizarTabla();
-    }
-
-    function limpiarFormulario() {
-        document.querySelectorAll('.grid-form input').forEach(i => i.value = "");
-    }
-
-    window.onclick = function(event) {
-        if (event.target == document.getElementById('modalFicha')) cerrarFicha();
     }
 </script>
 </body>
