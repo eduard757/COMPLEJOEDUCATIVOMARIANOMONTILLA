@@ -2,92 +2,96 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGE - Mariano Montilla</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { text-align: center; color: #1a2a6c; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        #seccion-sistema { display: none; }
-        .ficha { margin-top: 20px; padding: 15px; border: 1px solid #3498db; border-radius: 8px; background: #f9f9f9; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* LOGO DE FONDO: Se ajusta a toda la pantalla con transparencia */
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                        url('IMG-20260123-WA0146.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* ANIMACIÓN PARA EL LOGO QUE SE MUEVE */
+        @keyframes flotar {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .contenedor-principal {
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .escudo-animado {
+            width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            animation: flotar 4s ease-in-out infinite; /* El logo se mueve solo */
+        }
+
+        /* DISEÑO EN COLORES AZULES */
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-top: 6px solid #1a2a6c; /* Azul oscuro institucional */
+        }
+
+        h1 { color: #1a2a6c; font-size: 1.5em; text-transform: uppercase; margin-bottom: 5px; }
+        p.ubicacion { color: #3498db; font-weight: bold; margin-bottom: 25px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #1a2a6c;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #3498db; }
     </style>
 </head>
 <body>
-<div style="text-align: center; padding: 20px; background-color: white; border-bottom: 4px solid #1a2a6c; margin-bottom: 20px;">
-   <img src="IMG-20260123-WA0146.jpg" alt="Escudo Mariano Montilla" style="width: 130px; height: auto; margin-bottom: 10px;">
-    
-    <h1 style="color: #1a2a6c; font-family: Arial, sans-serif; margin: 0; font-size: 1.6em; text-transform: uppercase;">
-        Complejo Educativo "Mariano Montilla"
-    </h1>
-    <p style="color: #3498db; font-weight: bold; margin: 5px 0 0 0;">Valle de la Pascua - Edo. Guárico</p>
-</div>
-<div id="seccion-login" class="card">
-    <h2>🔑 Acceso Institucional</h2>
-    <input type="text" id="usuario" placeholder="Usuario de Tesis">
-    <input type="password" id="clave" placeholder="Contraseña">
-    <button onclick="entrar()">Ingresar al Sistema</button>
-</div>
 
-<div id="seccion-sistema" class="card">
-    <button onclick="location.reload()" style="width: auto; background: #e74c3c; float: right; padding: 5px 10px; font-size: 12px;">Cerrar Sesión</button>
-    <h2>🔎 Buscador - Mariano Montilla</h2>
-    <input type="text" id="cedulaBusqueda" placeholder="Cédula Escolar del niño...">
-    <button onclick="buscar()">Buscar Estudiante</button>
+    <div class="contenedor-principal">
+        <img src="IMG-20260123-WA0146.jpg" alt="Escudo Mariano Montilla" class="escudo-animado">
+        
+        <h1>Complejo Educativo "Mariano Montilla"</h1>
+        <p class="ubicacion">Valle de la Pascua - Edo. Guárico</p>
 
-    <div id="resultado" style="display:none;" class="ficha">
-        <div id="areaPDF">
-            <h3 style="text-align: center;">DATOS DEL ESTUDIANTE</h3>
-            <p><strong>Cédula Escolar:</strong> <span id="rCed"></span></p>
-            <p><strong>Nombre:</strong> <span id="rNom"></span></p>
-            <p><strong>Edad:</strong> <span id="rEda"></span></p>
-            <p><strong>Grado/Sección:</strong> <span id="rGra"></span></p>
-            <p><strong>Profesor:</strong> <span id="rPro"></span></p>
-            <hr>
-            <p><strong>Representante:</strong> <span id="rRep"></span></p>
-            <p><strong>Teléfono:</strong> <span id="rTel"></span></p>
+        <div class="card">
+            <h2 style="color: #1a2a6c;">🔑 Acceso al Sistema</h2>
+            <input type="text" placeholder="Cédula del Estudiante">
+            <input type="password" placeholder="Contraseña">
+            <button>Ingresar a Tesis</button>
         </div>
-        <button style="background: #27ae60;" onclick="bajarPDF()">📥 Descargar PDF</button>
     </div>
-</div>
 
-<script>
-    // BASE DE DATOS DE PRUEBA (Para tu tesis)
-    const baseDatos = [
-        { id: "V202601", nombre: "Luis García", edad: "8", grado: "3ero A", pro: "Lic. María", rep: "Ana García", tel: "0412-1112233" },
-        { id: "V202602", nombre: "Sofía Martínez", edad: "6", grado: "1ero B", pro: "Lic. Juan", rep: "Pedro Martínez", tel: "0424-4445566" }
-    ];
-
-    function entrar() {
-        // Usuario y Clave para tu defensa
-        const u = document.getElementById('usuario').value;
-        const c = document.getElementById('clave').value;
-        if(u === "tesis" && c === "2026") {
-            document.getElementById('seccion-login').style.display = 'none';
-            document.getElementById('seccion-sistema').style.display = 'block';
-        } else { alert("Datos incorrectos"); }
-    }
-
-    function buscar() {
-        const bus = document.getElementById('cedulaBusqueda').value;
-        const nino = baseDatos.find(n => n.id === bus);
-        if(nino) {
-            document.getElementById('rCed').innerText = nino.id;
-            document.getElementById('rNom').innerText = nino.nombre;
-            document.getElementById('rEda').innerText = nino.edad + " años";
-            document.getElementById('rGra').innerText = nino.grado;
-            document.getElementById('rPro').innerText = nino.pro;
-            document.getElementById('rRep').innerText = nino.rep;
-            document.getElementById('rTel').innerText = nino.tel;
-            document.getElementById('resultado').style.display = 'block';
-        } else { alert("Niño no encontrado"); }
-    }
-
-    function bajarPDF() {
-        const area = document.getElementById('areaPDF');
-        html2pdf().from(area).set({ margin: 1, filename: 'Ficha_Estudiante.pdf' }).save();
-    }
-</script>
 </body>
 </html>
