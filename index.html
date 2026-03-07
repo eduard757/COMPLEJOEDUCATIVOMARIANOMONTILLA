@@ -18,19 +18,23 @@
         .escudo-animado { width: 100px; animation: flotar 4s ease-in-out infinite; margin-bottom: 10px; }
         @keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 6px solid var(--azul-oscuro); margin-top: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 6px solid var(--azul-oscuro); margin-top: 20px; position: relative; }
         .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         
-        button { background: var(--azul-oscuro); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button { background: var(--azul-oscuro); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
         button:hover { background: var(--azul-claro); }
+
+        .btn-salir { background: #555; width: auto; padding: 8px 15px; font-size: 0.8em; margin: 0; }
+        .header-sistema { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        .seccion-busqueda { background: #f0f4f8; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px dashed var(--azul-oscuro); }
 
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; }
         th { background: var(--azul-oscuro); color: white; padding: 12px; }
         td { border: 1px solid #ddd; padding: 12px; text-align: left; cursor: pointer; }
         .fila-retirado { background-color: #ffcccc !important; color: #c0392b; }
 
-        /* MODAL DE LA FICHA */
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); overflow-y: auto; }
         .modal-content { 
             background: white; margin: 20px auto; padding: 40px; width: 90%; max-width: 700px; 
@@ -56,7 +60,7 @@
             body * { visibility: hidden; }
             #modalFicha, #modalFicha * { visibility: visible; }
             #modalFicha { position: absolute; left: 0; top: 0; width: 100%; background: white; }
-            .cerrar, .no-print { display: none !important; }
+            .cerrar, .no-print, .btn-salir { display: none !important; }
             .modal-content { margin: 0; padding: 20px; border: none; width: 100%; box-shadow: none; }
         }
     </style>
@@ -71,17 +75,31 @@
         <h2>🔑 Acceso Administrativo</h2>
         <input type="text" id="user" placeholder="Usuario">
         <input type="password" id="pass" placeholder="Contraseña">
-        <button onclick="validar()">Entrar</button>
+        <button onclick="validar()">Entrar al Sistema</button>
     </div>
 
     <div id="sistema" style="display: none;">
+        
         <div class="card">
-            <h3>➕ Nuevo Alumno</h3>
+            <div class="header-sistema">
+                <span style="font-weight: bold; color: var(--azul-oscuro);">Sesión: MARIANO</span>
+                <button class="btn-salir" onclick="salir()">Cerrar Sesión 🚪</button>
+            </div>
+
+            <div class="seccion-busqueda">
+                <h3 style="margin-top: 0; color: var(--azul-oscuro);">🔍 Consulta Rápida</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="busquedaEscolar" placeholder="Ingrese Cédula Escolar">
+                    <button onclick="buscarPorCedula()" style="width: auto; padding: 0 20px; margin-top: 0;">Buscar</button>
+                </div>
+            </div>
+
+            <h3 style="text-align: left; border-left: 5px solid var(--azul-oscuro); padding-left: 10px;">➕ Registrar Nuevo Alumno</h3>
             <div class="grid-form">
                 <input type="text" id="r-nom" placeholder="Nombres y Apellidos">
                 <input type="text" id="r-ced" placeholder="Cédula">
                 <input type="text" id="r-esc" placeholder="Cédula Escolar">
-                <input type="date" id="r-fec" title="Fecha de Nacimiento">
+                <input type="date" id="r-fec">
                 <input type="number" id="r-eda" placeholder="Edad">
                 <input type="text" id="r-lug" placeholder="Lugar de Nacimiento">
                 <select id="r-gra">
@@ -95,11 +113,11 @@
                 <input type="text" id="r-tel" placeholder="Teléfono">
                 <input type="email" id="r-cor" placeholder="Correo Electrónico">
             </div>
-            <button onclick="guardar()">💾 Registrar Estudiante</button>
+            <button onclick="guardar()">💾 Guardar en Base de Datos</button>
         </div>
 
         <div class="card">
-            <h3>📋 Lista de Alumnos (Clic para Ficha)</h3>
+            <h3>📋 Lista General de Alumnos</h3>
             <div id="tabla-alumnos"></div>
         </div>
     </div>
@@ -149,7 +167,16 @@
         if(document.getElementById('user').value === "MARIANO" && document.getElementById('pass').value === "12345") {
             document.getElementById('login').style.display = 'none';
             document.getElementById('sistema').style.display = 'block';
-        } else { alert("Datos incorrectos"); }
+        } else { alert("Usuario o Contraseña incorrectos"); }
+    }
+
+    function salir() {
+        if(confirm("¿Estás seguro que deseas cerrar sesión?")) {
+            document.getElementById('sistema').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('user').value = "";
+            document.getElementById('pass').value = "";
+        }
     }
 
     function guardar() {
@@ -174,10 +201,11 @@
             ret: false
         };
         
-        if(!a.nombre || !a.ced) return alert("Nombre y Cédula son obligatorios");
+        if(!a.nombre || !a.esc) return alert("Nombre y Cédula Escolar son obligatorios");
         alumnos.push(a);
         mostrar();
         document.querySelectorAll('.grid-form input').forEach(i => i.value = "");
+        alert("¡Alumno registrado con éxito!");
     }
 
     function mostrar() {
@@ -185,14 +213,24 @@
         for(let i=1; i<=5; i++) {
             let list = alumnos.filter(x => x.gra == i).sort((a,b) => a.nombre.localeCompare(b.nombre));
             if(list.length > 0) {
-                html += `<h4>${i}to Grado</h4><table><tr><th>Nombre</th><th>Sección</th></tr>`;
+                html += `<h4>${i}to Grado</h4><table><tr><th>Nombre</th><th>Cédula Escolar</th></tr>`;
                 list.forEach(x => {
-                    html += `<tr class="${x.ret ? 'fila-retirado' : ''}" onclick="abrir('${x.id}')"><td>${x.nombre}</td><td>${x.sec}</td></tr>`;
+                    html += `<tr class="${x.ret ? 'fila-retirado' : ''}" onclick="abrir('${x.id}')"><td>${x.nombre}</td><td>${x.esc}</td></tr>`;
                 });
                 html += `</table>`;
             }
         }
-        document.getElementById('tabla-alumnos').innerHTML = html || "<p>Sin registros</p>";
+        document.getElementById('tabla-alumnos').innerHTML = html || "<p style='color:#888;'>No hay alumnos registrados actualmente.</p>";
+    }
+
+    function buscarPorCedula() {
+        const buscado = document.getElementById('busquedaEscolar').value;
+        const encontrado = alumnos.find(a => a.esc === buscado);
+        if(encontrado) {
+            abrir(encontrado.id);
+        } else {
+            alert("Alumno no encontrado. Verifique la Cédula Escolar.");
+        }
     }
 
     function abrir(id) {
@@ -211,7 +249,7 @@
         document.getElementById('f-tel').innerText = x.tel;
         document.getElementById('f-cor').innerText = x.cor;
         document.getElementById('f-ingreso').innerText = x.ingreso;
-        document.getElementById('btnRetiro').innerText = x.ret ? "Reincorporar Alumno" : "Marcar Retirado";
+        document.getElementById('btnRetiro').innerText = x.ret ? "Reincorporar Alumno" : "Marcar como Retirado";
         document.getElementById('modalFicha').style.display = 'block';
     }
 
